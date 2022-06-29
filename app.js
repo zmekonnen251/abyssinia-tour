@@ -1,16 +1,20 @@
-const express = require('express');
+import express from 'express';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+import tourRouter from './routes/tourRoutes.js';
+import userRouter from './routes/userRoutes.js';
+
+dotenv.config({ path: './config.env' });
 
 const app = express();
 
-app.get('/', (req, res) => {
-  res
-    .status(200)
-    .json({ message: 'Hello form the server side!', app: 'Abyssinia Tour' });
-});
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
-app.post('/', (req, res) => {
-  res.status(200).send('Hello from the server side!');
-});
+app.use(express.json());
 
-const port = 3000;
-app.listen(port, () => console.log(`App listening on port ${port}!`));
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
+
+export default app;
