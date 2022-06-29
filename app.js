@@ -1,0 +1,16 @@
+const express = require('express');
+
+const app = express();
+
+app.get('/', (req, res) => {
+  res
+    .status(200)
+    .json({ message: 'Hello form the server side!', app: 'Abyssinia Tour' });
+});
+
+app.post('/', (req, res) => {
+  res.status(200).send('Hello from the server side!');
+});
+
+const port = 3000;
+app.listen(port, () => console.log(`App listening on port ${port}!`));
