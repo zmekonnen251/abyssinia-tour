@@ -6,6 +6,8 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD
 );
 
+const port = process.env.PORT || 3000;
+
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
@@ -14,8 +16,10 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log('DB is connected');
+    app.listen(port, () =>
+      console.log(`App listening on port ${port}!`)
+    );
+  })
+  .catch((err) => {
+    console.log(err);
   });
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`App listening on port ${port}!`));
