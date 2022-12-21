@@ -2,12 +2,39 @@ import express from 'express';
 import {
   getAllUsers,
   getUser,
-  updateUser,
   deleteUser,
+  updateMe,
+  deleteMe,
+  updateUser,
   createUser,
+  getMe,
 } from '../controllers/usersController.js';
+import {
+  login,
+  signUp,
+  forgotPassword,
+  resetPassword,
+  updatePassword,
+  protect,
+  restrictTo,
+} from '../controllers/authController.js';
 
 const router = express.Router();
+
+router.post('/signup', signUp);
+router.post('/login', login);
+router.post('/forgotPassword', forgotPassword);
+router.patch('/resetPassword/:token', resetPassword);
+
+router.use(protect);
+
+router.get('/me', getMe, getUser);
+router.patch('/updateMyPassword', updatePassword);
+router.delete('/deleteMe', deleteMe);
+router.patch('/updateMe', updateMe);
+
+router.use(restrictTo('admin'));
+
 router.route('/').get(getAllUsers).post(createUser);
 router
   .route('/:id')
