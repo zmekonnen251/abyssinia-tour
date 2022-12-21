@@ -1,12 +1,19 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import {
+  unHandledRejection,
+  unCaughtException,
+} from './controllers/errorController.js';
+dotenv.config();
+
+unCaughtException();
+
 import app from './app.js';
 
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD
 );
-
-const port = process.env.PORT || 3000;
 
 mongoose
   .connect(DB, {
@@ -16,10 +23,13 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    app.listen(port, () =>
-      console.log(`App listening on port ${port}!`)
-    );
-  })
-  .catch((err) => {
-    console.log(err);
+    console.log('DB connection successful!');
   });
+
+const port = process.env.PORT || 3000;
+
+const server = app.listen(port, () =>
+  console.log(`App listening on port ${port}!`)
+);
+
+unHandledRejection(server);
