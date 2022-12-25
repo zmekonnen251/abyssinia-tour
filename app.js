@@ -5,6 +5,8 @@ import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
 import hpp from 'hpp';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import tourRouter from './routes/tourRoutes.js';
 import userRouter from './routes/userRoutes.js';
@@ -15,10 +17,29 @@ import globalErrorHandler from './controllers/errorController.js';
 import { unCaughtException } from './controllers/errorController.js';
 
 unCaughtException();
+const corsWhiteList = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (corsWhiteList.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
 
 const app = express();
 // 1) GLOBAL MIDDLEWARES
-
+app.use(cors());
+app.use(cookieParser(corsOptions));
+app.use(express.static('./public'));
 // Set security HTTP headers
 app.use(helmet());
 
@@ -28,14 +49,14 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Limit requests from same API
-const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
-  message:
-    'Too many requests from this IP, please try again in an hour!',
-});
+// const limiter = rateLimit({
+//   max: 100,
+//   windowMs: 60 * 60 * 1000,
+//   message:
+//     'Too many requests from this IP, please try again in an hour!',
+// });
 
-app.use('/api', limiter);
+// app.use('/api', limiter);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
