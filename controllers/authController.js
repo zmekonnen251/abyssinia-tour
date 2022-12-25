@@ -1,6 +1,6 @@
 import { promisify } from 'util';
 import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
+import jsonWebtoken from 'jsonwebtoken';
 import User from '../models/userModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
@@ -28,9 +28,7 @@ const createSendToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: 'success',
     token,
-    data: {
-      user,
-    },
+    user,
   });
 };
 
@@ -54,7 +52,17 @@ export const signUp = catchAsync(async (req, res, next) => {
 
   newUser.password = undefined;
 
-  createSendToken(newUser, 201, res);
+  const jwt = generateJwtToken('refresh', {
+    id: newUser._id,
+  });
+
+  await User.findByIdAndUpdate(newUser._id, { jwt }, { new: true });
+  res.cookie('jwt', jwt, cookiesOption);
+  createSendToken(
+    { id: newUser.id, name: newUser.name, email: newUser.email },
+    201,
+    res
+  );
 });
 
 export const login = catchAsync(async (req, res, next) => {
@@ -73,14 +81,19 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password!', 401));
 
   // 3 ) If everything correct send token to client
-  createSendToken(user, 200, res);
-  // const token = generateJwtToken('refresh', {
-  //   id: user.id,
-  //   email: user.email,
-  //   name: user.name,
-  // });
+  const jwt = generateJwtToken('refresh', {
+    id: user._id,
+  });
 
-  // res.status(200).json({ status: 'success', token });
+  await User.findByIdAndUpdate(user._id, { jwt }, { new: true });
+
+  res.cookie('jwt', jwt, cookiesOption);
+
+  createSendToken(
+    { id: user.id, name: user.name, email: user.email },
+    200,
+    res
+  );
 });
 
 export const protect = catchAsync(async (req, res, next) => {
@@ -264,3 +277,38 @@ export const updatePassword = catchAsync(async (req, res, next) => {
   //   token,
   // });
 });
+
+export const handleRefreshToken = catchAsync(
+  async (req, res, next) => {
+    const cookies = req.cookies;
+
+    if (!cookies?.jwt)
+      return res.status(401).json({ message: 'Unauthorized' });
+    const jwt = cookies.jwt;
+
+    const foundUser = await User.findOne({ jwt });
+
+    if (!foundUser)
+      return res.status(403).json({ message: 'Forbiden' });
+
+    jsonWebtoken.verify(
+      jwt,
+      process.env.REFRESH_TOKEN_SECRET,
+      (err, decodedUser) => {
+        if (err || foundUser._id !== decodedUser.id) {
+          return res.status(403).json({ message: 'Forbiden' });
+        }
+
+        createSendToken(
+          {
+            id: foundUser.id,
+            name: foundUser.name,
+            email: foundUser.email,
+          },
+          200,
+          res
+        );
+      }
+    );
+  }
+);

@@ -39,7 +39,7 @@ router.route('/distances/:latlng/unit/:unit').get(getDistances);
 
 router
   .route('/')
-  .get(protect, getAllTours)
+  .get(getAllTours)
   .post(protect, restrictTo('admin', 'tour-guide'), createTour);
 
 router

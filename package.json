@@ -21,6 +21,8 @@
   "homepage": "https://github.com/zmekonnen251/abyssinia-tour#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "eslint": "^8.18.0",
     "eslint-config-airbnb": "^19.0.4",
