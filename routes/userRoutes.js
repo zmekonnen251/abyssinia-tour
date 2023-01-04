@@ -12,12 +12,12 @@ import {
 import {
   login,
   signUp,
+  logout,
   forgotPassword,
   resetPassword,
   updatePassword,
   protect,
   restrictTo,
-  handleRefreshToken,
 } from '../controllers/authController.js';
 
 const router = express.Router();
@@ -26,8 +26,7 @@ router.post('/signup', signUp);
 router.post('/login', login);
 router.post('/forgotPassword', forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);
-router.get('/refresh', handleRefreshToken);
-
+router.delete('/logout', logout);
 router.use(protect);
 
 router.get('/me', getMe, getUser);

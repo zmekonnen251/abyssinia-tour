@@ -11,38 +11,31 @@ import cookieParser from 'cookie-parser';
 import tourRouter from './routes/tourRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import reviewRouter from './routes/reviewRoutes.js';
+import bookingRouter from './routes/bookingRoutes.js';
 
 import AppError from './utils/appError.js';
 import globalErrorHandler from './controllers/errorController.js';
 import { unCaughtException } from './controllers/errorController.js';
 
 unCaughtException();
-const corsWhiteList = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'http://localhost:3002',
-];
+// const allowedOrigins = [
+
+// ];
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (corsWhiteList.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: ['*'],
+  optionSuccessStatus: 200,
   credentials: true,
-  optionsSuccessStatus: 200,
 };
 
 const app = express();
 // 1) GLOBAL MIDDLEWARES
-app.use(cors());
-app.use(cookieParser(corsOptions));
+app.use(cors(corsOptions));
+
 app.use(express.static('./public'));
 // Set security HTTP headers
 app.use(helmet());
-
+app.use(cookieParser());
 // Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -91,6 +84,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/booking', bookingRouter);
 
 //4) Unhandled routes
 app.all('*', (req, res, next) => {

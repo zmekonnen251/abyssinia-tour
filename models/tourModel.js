@@ -168,7 +168,7 @@ tourSchema.pre(/^find/, function (next) {
     select: '-__v -passwordChangedAt',
   });
 
-  this.select('-__v -secretTour -locations -startLocation');
+  this.select('-__v -secretTour ');
   next();
 });
 // Aggregation Middleware - runs before .aggregate()
