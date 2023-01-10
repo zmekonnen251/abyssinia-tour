@@ -33,6 +33,9 @@ const app = express();
 app.use(cors(corsOptions));
 
 app.use(express.static('./public'));
+
+// Admin Dashboard
+app.use('/admin', express.static('./admin'));
 // Set security HTTP headers
 app.use(helmet());
 app.use(cookieParser());
