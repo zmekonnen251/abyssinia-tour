@@ -33,16 +33,20 @@ const app = express();
 app.use(cors(corsOptions));
 
 app.use(express.static('./public'));
-
-// Admin Dashboard
-app.use('/admin', express.static('./admin'));
 // Set security HTTP headers
+
 app.use(helmet());
 app.use(cookieParser());
 // Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+app.use('/admin', express.static('./admin'));
+app.use('/', express.static('./public/build'));
+app.get('/*', (req, res) => {
+  res.sendFile('index.html', { root: 'public/build' });
+});
 
 // Limit requests from same API
 // const limiter = rateLimit({
