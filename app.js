@@ -37,7 +37,6 @@ const corsOptions = {
     'http://localhost:3001',
     undefined,
   ],
-  optionSuccessStatus: 200,
   credentials: true,
 };
 
