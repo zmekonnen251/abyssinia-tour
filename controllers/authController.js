@@ -18,6 +18,7 @@ const cookiesOption = {
     ),
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
   },
   access: {
     maxAge: new Date(
@@ -26,6 +27,7 @@ const cookiesOption = {
     ),
     httpOnly: false,
     secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
   },
 };
 
