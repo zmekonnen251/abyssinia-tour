@@ -90,7 +90,7 @@ export const signUp = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(newUser._id, { jwt }, { new: true });
 
   const url = `${req.protocol}//:${req.get('host')}/profile`;
-  console.log(url);
+
   await new Email(newUser, url).sendWelcome();
 
   createAndSendCookie(newUser, 201, res, 'refresh', jwt);

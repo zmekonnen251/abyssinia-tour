@@ -58,7 +58,6 @@ export const resizeTourImages = catchAsync(async (req, res, next) => {
         .toFile(`public/img/tours/${filename}`);
 
       req.body.images.push(filename);
-      console.log(req.body);
     })
   );
 

@@ -36,9 +36,8 @@ router.get('/me', getMe, getUser);
 router.patch('/updateMyPassword', updatePassword);
 router.delete('/deleteMe', deleteMe);
 router.patch('/updateMe', uploadUserPhoto, resizeUserPhoto, updateMe);
-console.log('user-routes');
+
 router.use(restrictTo('admin'));
-console.log('user-routes');
 
 router.route('/').get(getAllUsers).post(createUser);
 router
