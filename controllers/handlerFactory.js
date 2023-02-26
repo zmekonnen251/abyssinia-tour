@@ -12,16 +12,41 @@ const deleteOne = (Model) =>
         new AppError('No document found with that Id', 404)
       );
     res.status(204).json({
-      status: 'Success',
+      status: 'success',
       data: null,
     });
   });
 
 const updateOne = (Model, filter) =>
   catchAsync(async (req, res, next) => {
+    if (
+      Model.collection.collectionName === 'users' ||
+      Model.collection.collectionName === 'tours'
+    )
+      if (req.file) req.body.photo = req.file.filename;
+
+    if (Model.collection.collectionName === 'tours') {
+      if (req.body.startDates)
+        req.body.startDates = JSON.parse(req.body.startDates);
+      if (req.body.maxGroupSize)
+        req.body.maxGroupSize = parseInt(req.body.maxGroupSize);
+      if (req.body.price) req.body.price = parseInt(req.body.price);
+      if (req.body.locations)
+        req.body.locations = JSON.parse(req.body.locations);
+      if (req.body.guides)
+        req.body.guides = JSON.parse(req.body.guides);
+      if (req.body.duration)
+        req.body.duration = parseInt(req.body.duration);
+      if (req.body.startLocation)
+        req.body.startLocation = JSON.parse(req.body.startLocation);
+      if (req.body.public)
+        req.body.public = JSON.parse(req.body.public);
+    }
+
     const filteredBody = filter
       ? filterObj(req.body, ...filter)
       : req.body;
+
     const doc = await Model.findByIdAndUpdate(
       req.params.id,
       filteredBody,
@@ -39,9 +64,7 @@ const updateOne = (Model, filter) =>
 
     res.status(200).json({
       status: 'success',
-      data: {
-        data: doc,
-      },
+      data: doc,
     });
   });
 
@@ -51,7 +74,17 @@ const createOne = (Model, filter) =>
       ? filterObj(req.body, ...filter)
       : req.body;
 
+    if (Model.collection.collectionName === 'users') {
+      filteredBody.passwordChangedAt = Date.now() - 1000;
+    }
+
     const doc = await Model.create(filteredBody);
+
+    if (Model.collection.collectionName === 'users') {
+      doc.password = undefined;
+      doc.passwordChangedAt = undefined;
+      doc.__v = undefined;
+    }
 
     res.status(201).json({
       status: 'success',
@@ -65,6 +98,16 @@ const getOne = (Model, populateOptions) =>
   catchAsync(async (req, res, next) => {
     let query = Model.findById(req.params.id);
     if (populateOptions) query = query.populate(populateOptions);
+
+    if (Model.collection.collectionName === 'users')
+      query.select('-active');
+
+    if (Model.collection.collectionName === 'tours')
+      query.populate({
+        path: 'guides',
+        select: '-__v -passwordChangedAt -password -active',
+      });
+
     const doc = await query.select('-__v');
 
     if (!doc) {
@@ -94,6 +137,7 @@ const getAll = (Model) =>
       .paginate();
 
     // const doc = await features.query.explain();
+
     const doc = await features.query;
 
     //SEND RESPONSE
@@ -101,9 +145,7 @@ const getAll = (Model) =>
       status: 'success',
       results: doc.length,
 
-      data: {
-        data: doc,
-      },
+      data: doc,
     });
   });
 

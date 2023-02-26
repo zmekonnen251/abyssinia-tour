@@ -34,7 +34,8 @@ const createAndSendCookie = (
   statusCode,
   res,
   type,
-  token = ''
+  token = '',
+  options = {}
 ) => {
   if (type === 'refresh') {
     res.cookie('refreshToken', token, cookiesOption.refresh);
@@ -44,16 +45,18 @@ const createAndSendCookie = (
       _id: user._id,
       name: user.name,
       email: user.email,
+      photo: user.photo,
       role: user.role,
     });
     res.cookie('accessToken', accessToken, cookiesOption.access);
+
     res.status(statusCode).json({
       status: 'success',
-
       user: {
         name: user.name,
         email: user.email,
         role: user.role,
+        photo: user.photo,
         _id: user._id,
       },
     });
@@ -139,15 +142,14 @@ export const logout = catchAsync(async (req, res, next) => {
 
     async (err, decodedUser) => {
       if (err) return next(new AppError('Forbiden!', 403));
-      console.log('logout 2');
 
       const foundUser = await User.findById(decodedUser.id);
-      console.log('foundUser', foundUser, decodedUser);
+
       if (!foundUser) return next(new AppError('Forbiden!', 403));
-      console.log('logout 3');
+
       if (String(foundUser._id) !== decodedUser.id)
         return next(new AppError('Forbiden!', 403));
-      console.log('logout 4');
+
       await User.findByIdAndUpdate(
         foundUser.id,
         { jwt: '' },
@@ -232,7 +234,7 @@ export const protect = catchAsync(async (req, res, next) => {
             }
 
             const currentUser = await User.findById(
-              decodedRefreshToken._id
+              decodedRefreshToken.id
             );
 
             if (!currentUser) {
@@ -257,10 +259,21 @@ export const protect = catchAsync(async (req, res, next) => {
               );
             }
 
-            createAndSendCookie(currentUser, 200, res, 'access');
+            const accessToken = generateJwtToken('access', {
+              _id: currentUser._id,
+              name: currentUser.name,
+              email: currentUser.email,
+              photo: currentUser.photo,
+              role: currentUser.role,
+            });
+
+            res.cookie(
+              'accessToken',
+              accessToken,
+              cookiesOption.access
+            );
 
             req.user = currentUser;
-
             next();
           }
         );
@@ -400,6 +413,7 @@ export const updatePassword = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.user.id).select('+password');
 
   // 2) Check if POSTed current password is correct
+
   if (
     !(await user.correctPassword(
       req.body.passwordCurrent,
@@ -415,8 +429,8 @@ export const updatePassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 4) Log user in, send JWT
-  createSendToken(user, 200, res);
-  // const token = generateJwtToken('refresh', {
+  createAndSendCookie(user, 200, res, 'access');
+
   //   id: user.id,
   //   email: user.email,
   //   name: user.name,

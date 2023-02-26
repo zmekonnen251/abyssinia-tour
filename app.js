@@ -13,9 +13,17 @@ import userRouter from './routes/userRoutes.js';
 import reviewRouter from './routes/reviewRoutes.js';
 import bookingRouter from './routes/bookingRoutes.js';
 
+// import { createBookingCheckout } from './controllers/bookingController.js';
+
 import AppError from './utils/appError.js';
-import globalErrorHandler from './controllers/errorController.js';
-import { unCaughtException } from './controllers/errorController.js';
+
+import globalErrorHandler, {
+  unCaughtException,
+} from './controllers/errorController.js';
+
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 unCaughtException();
 // const allowedOrigins = [
@@ -23,30 +31,32 @@ unCaughtException();
 // ];
 
 const corsOptions = {
-  origin: ['*'],
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    undefined,
+  ],
   optionSuccessStatus: 200,
   credentials: true,
 };
 
 const app = express();
+app.enable('trust proxy');
 // 1) GLOBAL MIDDLEWARES
+
 app.use(cors(corsOptions));
+app.options('*', cors());
 
-app.use(express.static('./public'));
+// serving static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Set security HTTP headers
-
 app.use(helmet());
-app.use(cookieParser());
+
 // Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-
-app.use('/admin', express.static('./admin'));
-app.use('/', express.static('./public/build'));
-app.get('/*', (req, res) => {
-  res.sendFile('index.html', { root: 'public/build' });
-});
 
 // Limit requests from same API
 // const limiter = rateLimit({
@@ -60,6 +70,8 @@ app.get('/*', (req, res) => {
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
@@ -91,7 +103,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
-app.use('/api/v1/booking', bookingRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 //4) Unhandled routes
 app.all('*', (req, res, next) => {

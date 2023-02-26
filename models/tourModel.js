@@ -32,7 +32,7 @@ const tourSchema = new mongoose.Schema(
     },
     difficulty: {
       type: String,
-      required: [true, 'A tour must have a difficulty'],
+      // required: [true, 'A tour must have a difficulty'],
       enum: {
         values: ['easy', 'medium', 'difficult'],
         message: 'Difficulty is either: easy, medium or difficult',
@@ -76,7 +76,7 @@ const tourSchema = new mongoose.Schema(
     },
     imageCover: {
       type: String,
-      required: [true, 'A tour must have a cover image'],
+      // required: [true, 'A tour must have a cover image'],
     },
     images: [String],
     createdAt: {
@@ -119,6 +119,10 @@ const tourSchema = new mongoose.Schema(
         ref: 'User',
       },
     ],
+    public: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -128,7 +132,7 @@ const tourSchema = new mongoose.Schema(
 
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
-tourSchema.index({ startLocation: '2dsphere' });
+// tourSchema.index({ startLocation: '2dsphere' });
 
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
@@ -162,15 +166,20 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-tourSchema.pre(/^find/, function (next) {
+tourSchema.pre(/^findById/, function (next) {
   this.populate({
-    path: 'guides',
-    select: '-__v -passwordChangedAt',
+    path: 'reviews',
+    select: '-__v',
   });
 
+  next();
+});
+
+tourSchema.pre(/^create/, function (next) {
   this.select('-__v -secretTour ');
   next();
 });
+
 // Aggregation Middleware - runs before .aggregate()
 // tourSchema.pre('aggregate', function (next) {
 //   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });

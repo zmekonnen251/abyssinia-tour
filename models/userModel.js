@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
-  photo: String,
+  photo: { type: String, default: 'default.jpg' },
   role: {
     type: String,
     enum: ['user', 'guide', 'lead-guide', 'admin'],
@@ -44,9 +44,16 @@ const userSchema = new mongoose.Schema({
   active: {
     type: Boolean,
     default: true,
-    select: false,
   },
   jwt: String,
+  createdAt: {
+    type: Date,
+    default: mongoose.Types.ObjectId().getTimestamp(),
+  },
+  modifiedAt: {
+    type: Date,
+    default: mongoose.Types.ObjectId().getTimestamp(),
+  },
 });
 
 userSchema.pre('save', async function (next) {
@@ -57,6 +64,10 @@ userSchema.pre('save', async function (next) {
   this.passwordConfirm = undefined;
 
   next();
+});
+
+userSchema.post('update', function (doc) {
+  this.modifiedAt = mongoose.Types.ObjectId().getTimestamp();
 });
 
 userSchema.methods.correctPassword = async function (
@@ -97,6 +108,14 @@ userSchema.pre('save', function (next) {
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
+
+// userSchema.pre('find', function (next) {
+//   this.select(
+//     '-__v -passwordChangedAt -passwordResetToken -passwordResetExpires -jwt'
+//   );
+
+//   next();
+// });
 
 const User = mongoose.model('User', userSchema);
 

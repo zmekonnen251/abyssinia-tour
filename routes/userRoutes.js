@@ -8,6 +8,8 @@ import {
   updateUser,
   createUser,
   getMe,
+  uploadUserPhoto,
+  resizeUserPhoto,
 } from '../controllers/usersController.js';
 import {
   login,
@@ -27,20 +29,22 @@ router.post('/login', login);
 router.post('/forgotPassword', forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);
 router.delete('/logout', logout);
+
 router.use(protect);
 
 router.get('/me', getMe, getUser);
 router.patch('/updateMyPassword', updatePassword);
 router.delete('/deleteMe', deleteMe);
-router.patch('/updateMe', updateMe);
-
+router.patch('/updateMe', uploadUserPhoto, resizeUserPhoto, updateMe);
+console.log('user-routes');
 router.use(restrictTo('admin'));
+console.log('user-routes');
 
 router.route('/').get(getAllUsers).post(createUser);
 router
   .route('/:id')
   .get(getUser)
-  .patch(updateUser)
+  .patch(uploadUserPhoto, resizeUserPhoto, updateUser)
   .delete(deleteUser);
 
 export default router;
