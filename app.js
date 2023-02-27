@@ -38,6 +38,13 @@ const corsOptions = {
     undefined,
   ],
   credentials: true,
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'Origin',
+    'X-Requested-With',
+    'Accept',
+  ],
 };
 
 const app = express();
