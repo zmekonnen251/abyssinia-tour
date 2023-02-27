@@ -1,7 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
-import helmet from 'helmet';
+// import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
 import hpp from 'hpp';
@@ -38,17 +38,25 @@ const corsOptions = {
     undefined,
   ],
   credentials: true,
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-    'Origin',
-    'X-Requested-With',
-    'Accept',
-  ],
+
+  optionOnSuccess: (res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization'
+    );
+    res.header(
+      'Access-Control-Allow-Methods',
+      'GET, POST, PUT, DELETE'
+    );
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Max-Age', 86400);
+    res.status(201).send();
+  },
 };
 
 const app = express();
-app.enable('trust proxy');
+// app.enable('trust proxy');
 // 1) GLOBAL MIDDLEWARES
 
 app.use(cors(corsOptions));
@@ -58,7 +66,7 @@ app.options('*', cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Set security HTTP headers
-app.use(helmet());
+// app.use(helmet());
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
