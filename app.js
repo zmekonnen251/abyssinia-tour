@@ -9,6 +9,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 
+import corsOptions from './config/corsOptions.js';
+
 import tourRouter from './routes/tourRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import reviewRouter from './routes/reviewRoutes.js';
@@ -31,29 +33,29 @@ unCaughtException();
 
 // ];
 
-const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:3001',
-    undefined,
-  ],
-  credentials: true,
+// const corsOptions = {
+//   origin: [
+//     'http://localhost:3000',
+//     'http://localhost:3001',
+//     undefined,
+//   ],
+//   credentials: true,
 
-  optionOnSuccess: (res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Content-Type, Authorization'
-    );
-    res.header(
-      'Access-Control-Allow-Methods',
-      'GET, POST, PUT, DELETE'
-    );
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Access-Control-Max-Age', 86400);
-    res.status(201).send();
-  },
-};
+//   optionOnSuccess: (res) => {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header(
+//       'Access-Control-Allow-Headers',
+//       'Content-Type, Authorization'
+//     );
+//     res.header(
+//       'Access-Control-Allow-Methods',
+//       'GET, POST, PUT, DELETE'
+//     );
+//     res.header('Access-Control-Allow-Credentials', true);
+//     res.header('Access-Control-Max-Age', 86400);
+//     res.status(201).send();
+//   },
+// };
 
 const app = express();
 // app.enable('trust proxy');

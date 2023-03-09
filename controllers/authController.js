@@ -12,22 +12,24 @@ dotenv.config();
 
 const cookiesOption = {
   refresh: {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None',
     maxAge: new Date(
       Date.now() +
         process.env.REFRESH_TOKEN_COOKIE_EXPIRES_IN * 60 * 1000
     ),
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
+    
   },
+
   access: {
+    httpOnly: false,
+    secure: true,
+    sameSite: 'None',
     maxAge: new Date(
       Date.now() +
         process.env.ACCESS_TOKEN_COOKIE_EXPIRES_IN * 60 * 1000
     ),
-    httpOnly: false,
-    secure: true,
-    sameSite: 'none',
   },
 };
 
