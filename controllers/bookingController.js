@@ -88,7 +88,7 @@ export const getUserBookings = catchAsync(async (req, res, next) => {
 const createBookingCheckout = async (session) => {
   const tour = session.client_reference_id;
   const user = await User.findOne({ email: session.customer_email });
-  const price = session.display_items[0].price_data.unit_amount / 100;
+  const price = session.amount_total / 100;
 
   await Booking.create({ tour, user, price });
 };
@@ -119,7 +119,6 @@ export const webhookCheckout = catchAsync(async (req, res, next) => {
 
 export const getAllBookings = factory.getAll(Booking);
 export const deleteBooking = factory.deleteOne(Booking);
-export const createBooking = factory.createOne(Booking);
 export const getBooking = factory.getOne(Booking);
 export const updateBooking = factory.updateOne(Booking);
 

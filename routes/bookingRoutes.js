@@ -27,6 +27,5 @@ router.get('/my-bookings', protect, getUserBookings);
 router.delete('/:id', protect, restrictTo('admin'), deleteBooking);
 router.patch('/:id', protect, restrictTo('admin'), updateBooking);
 router.get('/:id', protect, restrictTo('admin'), getBooking);
-router.post('/', protect, restrictTo('admin'), createBooking);
 
 export default router;
