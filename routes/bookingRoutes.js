@@ -6,7 +6,6 @@ import {
 } from '../controllers/authController.js';
 import {
   getCheckoutSession,
-  createBookingCheckout,
   getAllBookings,
   getUserBookings,
   deleteBooking,
@@ -17,11 +16,6 @@ import {
 const router = express.Router();
 
 router.post('/checkout-session/:tourId', protect, getCheckoutSession);
-// router.get(
-//   '/create-booking/user/:user/tour/:tour/price/:price',
-//   protect,
-//   createBookingCheckout
-// );
 
 router.get(
   '/',
