@@ -16,6 +16,7 @@ import userRouter from './routes/userRoutes.js';
 import reviewRouter from './routes/reviewRoutes.js';
 import bookingRouter from './routes/bookingRoutes.js';
 
+import { webhookCheckout } from './controllers/bookingController.js';
 // import { createBookingCheckout } from './controllers/bookingController.js';
 
 import AppError from './utils/appError.js';
@@ -84,6 +85,13 @@ if (process.env.NODE_ENV === 'development') {
 // });
 
 // app.use('/api', limiter);
+// app.use(express.raw({ type: 'application/json' }));
+
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  webhookCheckout
+);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));

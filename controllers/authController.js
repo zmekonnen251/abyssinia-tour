@@ -10,11 +10,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-
-
-const createAndSendCookie = (user,res,token) => {
+const createAndSendCookie = (user, res, token) => {
   const cookiesOption = {
- 
     httpOnly: true,
     secure: true,
     sameSite: 'None',
@@ -22,10 +19,9 @@ const createAndSendCookie = (user,res,token) => {
       Date.now() +
         process.env.REFRESH_TOKEN_COOKIE_EXPIRES_IN * 60 * 1000
     ),
-    
   };
-    res.cookie('refreshToken', token, cookiesOption);
-  }
+  res.cookie('refreshToken', token, cookiesOption);
+};
 
 export const signUp = catchAsync(async (req, res, next) => {
   const {
@@ -47,9 +43,9 @@ export const signUp = catchAsync(async (req, res, next) => {
 
   newUser.password = undefined;
 
-  const refreshToken = generateJwtToken('refresh',newUser);
+  const jwt = generateJwtToken('refresh', newUser);
   const accessToken = generateJwtToken('access', newUser);
-  
+
   await User.findByIdAndUpdate(newUser._id, { jwt }, { new: true });
 
   const url = `${req.protocol}//:${req.get('host')}/profile`;
@@ -57,7 +53,7 @@ export const signUp = catchAsync(async (req, res, next) => {
   await new Email(newUser, url).sendWelcome();
 
   createAndSendCookie(newUser, res, jwt);
-  res.json({accessToken});
+  res.json({ accessToken });
 });
 
 export const login = catchAsync(async (req, res, next) => {
@@ -77,7 +73,7 @@ export const login = catchAsync(async (req, res, next) => {
 
   // 3 ) If everything correct send token to client
   // console.log(user.id, user._id);
-  const refreshToken = generateJwtToken('refresh',user);
+  const refreshToken = generateJwtToken('refresh', user);
 
   const accessToken = generateJwtToken('access', user);
 
@@ -88,7 +84,7 @@ export const login = catchAsync(async (req, res, next) => {
   );
 
   createAndSendCookie(user, res, refreshToken);
-  res.json({accessToken});
+  res.json({ accessToken });
 });
 
 export const logout = catchAsync(async (req, res, next) => {
@@ -139,9 +135,7 @@ export const protect = catchAsync(async (req, res, next) => {
     accessTokenAuthHeader = req.headers.authorization.split(' ')[1];
   }
 
-  if (
-    !accessTokenAuthHeader
-  ) {
+  if (!accessTokenAuthHeader) {
     return next(
       new AppError(
         'You are not logged in! Please login to get access.',
@@ -149,7 +143,7 @@ export const protect = catchAsync(async (req, res, next) => {
       )
     );
   }
-  
+
   // 2) verify token
 
   jsonWebtoken.verify(
@@ -196,10 +190,12 @@ export const protect = catchAsync(async (req, res, next) => {
               );
             }
 
-            const accessToken = generateJwtToken('access', currentUser);
+            const accessToken = generateJwtToken(
+              'access',
+              currentUser
+            );
 
-            
-            res.json({accessToken});
+            res.json({ accessToken });
 
             req.user = currentUser;
             next();
@@ -231,7 +227,6 @@ export const protect = catchAsync(async (req, res, next) => {
         }
 
         req.user = currentUser;
-       
 
         next();
       }
@@ -327,9 +322,9 @@ export const resetPassword = catchAsync(async (req, res, next) => {
     { jwt: refreshToken },
     { new: true }
   );
-  
+
   createAndSendCookie(user, res, refreshToken);
-  res.json({accessToken})
+  res.json({ accessToken });
 });
 
 export const updatePassword = catchAsync(async (req, res, next) => {
@@ -355,6 +350,5 @@ export const updatePassword = catchAsync(async (req, res, next) => {
   // 4) Log user in, send JWT
   const accessToken = generateJwtToken('access', user);
 
-  res.json({accessToken})
-
+  res.json({ accessToken });
 });

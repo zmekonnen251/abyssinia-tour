@@ -11,18 +11,17 @@ import {
   getUserBookings,
   deleteBooking,
   getBooking,
-  createBooking,
   updateBooking,
 } from '../controllers/bookingController.js';
 
 const router = express.Router();
 
 router.post('/checkout-session/:tourId', protect, getCheckoutSession);
-router.get(
-  '/create-booking/user/:user/tour/:tour/price/:price',
-  protect,
-  createBookingCheckout
-);
+// router.get(
+//   '/create-booking/user/:user/tour/:tour/price/:price',
+//   protect,
+//   createBookingCheckout
+// );
 
 router.get(
   '/',
