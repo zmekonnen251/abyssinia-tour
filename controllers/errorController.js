@@ -85,6 +85,7 @@ export default (err, req, res, next) => {
 export const unCaughtException = () =>
   process.on('uncaughtException', (err) => {
     console.log(err.name, err.message);
+    console.log(err);
     console.log('UNCAUGHT EXCEPTION! 🗣 Shutting down...');
     process.exit(1);
   });
@@ -92,6 +93,7 @@ export const unCaughtException = () =>
 export const unHandledRejection = (server) =>
   process.on('unhandledRejection', (err) => {
     console.log(err.name, err.message);
+    console.log(err);
     console.log('UNHANDLED REJECTION! 🗣 Shutting down...');
     server.close(() => {
       process.exit(1);
