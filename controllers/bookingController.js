@@ -6,6 +6,8 @@ import Stripe from 'stripe';
 import Booking from '../models/bookingModel.js';
 import User from '../models/userModel.js';
 
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
 export const getCheckoutSession = catchAsync(
   async (req, res, next) => {
     // 1) Get the currently booked tour
@@ -16,7 +18,6 @@ export const getCheckoutSession = catchAsync(
     }
 
     // 2) Create checkout session
-    const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -99,7 +100,7 @@ export const webhookCheckout = catchAsync(async (req, res, next) => {
   let event;
 
   try {
-    event = Stripe.webhooks.constructEvent(
+    event = stripe.webhooks.constructEvent(
       req.body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET
