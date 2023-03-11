@@ -22,14 +22,10 @@ export const getCheckoutSession = catchAsync(
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
-      success_url: `${req.protocol}//:${req.get(
-        'origin'
-      )}/profile/my-bookings`,
+      success_url: `${req.get('origin')}/profile/my-bookings`,
       // success_url: `${req.origin}//:${req.get('host')}/tours/profile/my-bookings`,
 
-      cancel_url: `${req.protocol}//:${req.get('origin')}/tours/${
-        req.params.tourId
-      }`,
+      cancel_url: `${req.get('origin')}/tours/${req.params.tourId}`,
       customer_email: req.user.email,
       client_reference_id: req.params.tourId,
       line_items: [
