@@ -11,6 +11,7 @@ import {
   deleteBooking,
   getBooking,
   updateBooking,
+  chapaCheckout,
 } from '../controllers/bookingController.js';
 
 const router = express.Router();
@@ -28,4 +29,9 @@ router.delete('/:id', protect, restrictTo('admin'), deleteBooking);
 router.patch('/:id', protect, restrictTo('admin'), updateBooking);
 router.get('/:id', protect, restrictTo('admin'), getBooking);
 
+router.post(
+  '/chapa-checkout-session/:tourId',
+  protect,
+  chapaCheckout
+);
 export default router;
