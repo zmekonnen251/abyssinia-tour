@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import AppError from '../utils/appError.js';
+
 dotenv.config();
 
 const handleCastErrorDB = (err) => {
@@ -27,7 +28,7 @@ const handleJWTError = () =>
 const handleJWTExpiredError = () =>
   new AppError('Your token has expired! Please log in again.', 401);
 
-const sendErrorDev = (err, res) => {
+const sendErrorDev = (err, req, res) => {
   // A) API
   if (req.originalUrl.startsWith('/api')) {
     return res.status(err.statusCode).json({
@@ -48,7 +49,7 @@ const sendErrorDev = (err, res) => {
   // Operational, trusted error: send message to client
 };
 
-const sendErrorProd = (err, res) => {
+const sendErrorProd = (err, req, res) => {
   // Operational, trusted error: send message to client
   // A) API
   if (req.originalUrl.startsWith('/api')) {
@@ -94,7 +95,7 @@ export default (err, req, res, next) => {
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
     error.name = err.name;
@@ -108,7 +109,7 @@ export default (err, req, res, next) => {
     if (error.name === 'TokenExpiredError')
       error = handleJWTExpiredError();
 
-    sendErrorProd(error, res);
+    sendErrorProd(error, res, res);
   }
 };
 
