@@ -109,7 +109,7 @@ export default (err, req, res, next) => {
     if (error.name === 'TokenExpiredError')
       error = handleJWTExpiredError();
 
-    sendErrorProd(error, res, res);
+    sendErrorProd(error, req, res);
   }
 };
 
