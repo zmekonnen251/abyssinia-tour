@@ -16,10 +16,7 @@ import userRouter from './routes/userRoutes.js';
 import reviewRouter from './routes/reviewRoutes.js';
 import bookingRouter from './routes/bookingRoutes.js';
 
-import {
-  webhookCheckout,
-  chapaCheckoutHook,
-} from './controllers/bookingController.js';
+import { webhookCheckout } from './controllers/bookingController.js';
 // import { createBookingCheckout } from './controllers/bookingController.js';
 
 import AppError from './utils/appError.js';
@@ -121,8 +118,6 @@ app.post(
   express.raw({ type: 'application/json' }),
   webhookCheckout
 );
-
-app.post('/chapa-checkout', chapaCheckoutHook);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
