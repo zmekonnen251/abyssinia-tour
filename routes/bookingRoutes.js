@@ -12,6 +12,7 @@ import {
   getBooking,
   updateBooking,
   chapaCheckout,
+  verifyChapaPayment,
 } from '../controllers/bookingController.js';
 
 const router = express.Router();
@@ -34,4 +35,7 @@ router.post(
   protect,
   chapaCheckout
 );
+
+router.get('/verify-chapa-payment/:id', verifyChapaPayment);
+
 export default router;
