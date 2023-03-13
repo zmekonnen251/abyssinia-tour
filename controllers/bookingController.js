@@ -176,6 +176,7 @@ export const chapaCheckoutHook = catchAsync(
   async (req, res, next) => {
     console.log(req.body);
     // const { tx_ref, status } = req.body;
+    res.send(200);
   }
 );
 
