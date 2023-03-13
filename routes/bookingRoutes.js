@@ -38,6 +38,6 @@ router.post(
 );
 
 router.get('/verify-chapa-payment/:id', verifyChapaPayment);
-app.post('/chapa-checkout-webhook', chapaCheckoutHook);
+router.post('/chapa-checkout-webhook', chapaCheckoutHook);
 
 export default router;
