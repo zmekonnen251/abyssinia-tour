@@ -114,7 +114,7 @@ export const chapaCheckout = catchAsync(async (req, res, next) => {
   const RETURN_URL = `${req.get(
     'origin'
   )}/profile/my-bookings?success=true`;
-  const CALLBACK_URL = `http://localhost:5000/api/v1/bookings/verify-chapa-payment/${TRX_REF}`;
+  const CALLBACK_URL = `https://abyssinia-tour.onrender.com/api/v1/bookings/verify-chapa-payment/${TRX_REF}`;
 
   // a unique reference given to every transaction
 
