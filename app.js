@@ -36,7 +36,7 @@ import * as Tracing from '@sentry/tracing';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// unCaughtException();
+unCaughtException();
 // const allowedOrigins = [
 
 // ];
@@ -67,26 +67,26 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
-Sentry.init({
-  dsn: 'https://5ccaa63c517a4f9eb3bd8744795b0047@o4504181861580800.ingest.sentry.io/4504826356301824',
-  integrations: [
-    // enable HTTP calls tracing
-    new Sentry.Integrations.Http({ tracing: true }),
-    // enable Express.js middleware tracing
-    new Tracing.Integrations.Express({ app }),
-  ],
+// Sentry.init({
+//   dsn: 'https://5ccaa63c517a4f9eb3bd8744795b0047@o4504181861580800.ingest.sentry.io/4504826356301824',
+//   integrations: [
+//     // enable HTTP calls tracing
+//     new Sentry.Integrations.Http({ tracing: true }),
+//     // enable Express.js middleware tracing
+//     new Tracing.Integrations.Express({ app }),
+//   ],
 
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
-});
+//   // Set tracesSampleRate to 1.0 to capture 100%
+//   // of transactions for performance monitoring.
+//   // We recommend adjusting this value in production
+//   tracesSampleRate: 1.0,
+// });
 
 // RequestHandler creates a separate execution context using domains, so that every
-// transaction/span/breadcrumb is attached to its own Hub instance
-app.use(Sentry.Handlers.requestHandler());
-// TracingHandler creates a trace for every incoming request
-app.use(Sentry.Handlers.tracingHandler());
+// // transaction/span/breadcrumb is attached to its own Hub instance
+// app.use(Sentry.Handlers.requestHandler());
+// // TracingHandler creates a trace for every incoming request
+// app.use(Sentry.Handlers.tracingHandler());
 
 // app.enable('trust proxy');
 // 1) GLOBAL MIDDLEWARES
@@ -163,25 +163,25 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/bookings', bookingRouter);
 
-app.use(
-  Sentry.Handlers.errorHandler({
-    shouldHandleError(error) {
-      // Capture all 404 and 500 errors
-      if (error.status === 404 || error.status === 500) {
-        return true;
-      }
-      return false;
-    },
-  })
-);
+// app.use(
+//   Sentry.Handlers.errorHandler({
+//     shouldHandleError(error) {
+//       // Capture all 404 and 500 errors
+//       if (error.status === 404 || error.status === 500) {
+//         return true;
+//       }
+//       return false;
+//     },
+//   })
+// );
 
 // Optional fallthrough error handler
-app.use(function onError(err, req, res, next) {
-  // The error id is attached to `res.sentry` to be returned
-  // and optionally displayed to the user for support.
-  res.statusCode = 500;
-  res.end(res.sentry + '\n');
-});
+// app.use(function onError(err, req, res, next) {
+//   // The error id is attached to `res.sentry` to be returned
+//   // and optionally displayed to the user for support.
+//   res.statusCode = 500;
+//   res.end(res.sentry + '\n');
+// });
 
 //4) Unhandled routes
 app.all('*', (req, res, next) => {
@@ -189,6 +189,6 @@ app.all('*', (req, res, next) => {
 });
 
 //5) Global error handler
-// app.use(globalErrorHandler);
+app.use(globalErrorHandler);
 
 export default app;

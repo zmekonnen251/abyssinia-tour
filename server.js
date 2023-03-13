@@ -7,7 +7,7 @@ import {
 } from './controllers/errorController.js';
 dotenv.config();
 
-// unCaughtException();
+unCaughtException();
 
 import app from './app.js';
 
@@ -33,4 +33,4 @@ const server = app.listen(port, () =>
   console.log(`App listening on port ${port}!`)
 );
 
-// unHandledRejection(server);
+unHandledRejection(server);
