@@ -1,0 +1,63 @@
+{
+  "name": "abyssinia-tour",
+  "version": "1.0.0",
+  "description": "A full-stack tour service provider company website",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon server.js",
+    "start:prod": "nodemon server.js",
+    "debug": "ndb server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zmekonnen251/abyssinia-tour.git"
+  },
+  "author": "Zelalem G. Mekonnen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zmekonnen251/abyssinia-tour/issues"
+  },
+  "homepage": "https://github.com/zmekonnen251/abyssinia-tour#readme",
+  "dependencies": {
+    "@sentry/node": "^7.42.0",
+    "@sentry/tracing": "^7.42.0",
+    "axios": "^1.3.4",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "eslint": "^8.18.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.1.0",
+    "eslint-plugin-react": "^7.30.1",
+    "express": "^4.18.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^6.7.0",
+    "helmet": "^6.0.1",
+    "hpp": "^0.2.3",
+    "html-to-text": "^9.0.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.13.14",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.8.0",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.7.1",
+    "pug": "^3.0.2",
+    "sharp": "^0.31.3",
+    "slugify": "^1.6.5",
+    "stripe": "^11.5.0",
+    "validator": "^13.7.0",
+    "xss-clean": "^0.1.1"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "ndb": "^1.1.5"
+  }
+}
